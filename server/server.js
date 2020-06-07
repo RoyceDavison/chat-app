@@ -14,6 +14,17 @@ var io = socketIO(server); //web socket server
 //io.on() register an event listener
 io.on("connection", (socket) => {
   console.log("A client is connected");
+
+  socket.emit("newMessage", {
+    from: "Mike",
+    text: "Hello, mike!",
+    createdAt: 123,
+  });
+
+  socket.on("createMessage", (newMessage) => {
+    console.log("Create an message: ", newMessage);
+  });
+
   socket.on("disconnect", (socket) => {
     console.log("Disconnected a client");
   });
