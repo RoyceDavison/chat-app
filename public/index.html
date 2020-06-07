@@ -9,5 +9,17 @@
 </head>
 <body>
     <h3>Welcome to the chat App</h3>
+    <!--Load the socket library with the following script-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        socket.on('connect', () => {
+            console.log("Connect to a server");
+        });
+
+        socket.on('disconnect', () => {
+            console.log("Disconnect from a server ");
+        });
+    </script>
 </body>
 </html>
