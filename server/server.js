@@ -12,17 +12,18 @@ var server = http.createServer(app); //http server
 var io = socketIO(server); //web socket server
 
 //io.on() register an event listener
+//socket.emit() --> emit an event to a single connection, io.emit() --> emit an event to every connections
 io.on("connection", (socket) => {
   console.log("A client is connected");
 
-  socket.emit("newMessage", {
-    from: "Mike",
-    text: "Hello, mike!",
-    createdAt: 123,
-  });
-
   socket.on("createMessage", (newMessage) => {
     console.log("Create an message: ", newMessage);
+
+    io.emit("newMessage", {
+      from: newMessage.from,
+      text: newMessage.text,
+      createdAt: new Date().getTime(),
+    });
   });
 
   socket.on("disconnect", (socket) => {
