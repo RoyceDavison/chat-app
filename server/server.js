@@ -16,6 +16,18 @@ var io = socketIO(server); //web socket server
 io.on("connection", (socket) => {
   console.log("A client is connected");
 
+  socket.emit("newMessage", {
+    from: "Admin",
+    text: "Weclome to chat room",
+  });
+
+  //alert other users except this
+  socket.broadcast.emit("newMessage", {
+    from: "admin",
+    text: "A new user is joined",
+    createdAt: new Date().getTime(),
+  });
+
   socket.on("createMessage", (newMessage) => {
     console.log("Create an message: ", newMessage);
 
@@ -24,16 +36,18 @@ io.on("connection", (socket) => {
       text: newMessage.text,
       createdAt: new Date().getTime(),
     });
+
+    // socket.broadcast.emit("newMessage", {
+    //   from: newMessage.from,
+    //   text: newMessage.text,
+    //   createdAt: new Date().getTime(),
+    // });
   });
 
   socket.on("disconnect", (socket) => {
     console.log("Disconnected a client");
   });
 });
-
-// app.listen(PORT, () => {
-//   console.log("------CHAT APP START------" + PORT);
-// });
 
 server.listen(PORT, () => {
   console.log("------CHAT APP START------" + PORT);
