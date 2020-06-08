@@ -3,6 +3,7 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 
+const { generateMessage } = require("./utils/message");
 const publicPath = path.resolve(__dirname, "../public");
 const PORT = process.env.PORT || 3000;
 
@@ -16,27 +17,20 @@ var io = socketIO(server); //web socket server
 io.on("connection", (socket) => {
   console.log("A client is connected");
 
-  socket.emit("newMessage", {
-    from: "Admin",
-    text: "Weclome to chat room",
-  });
+  socket.emit("newMessage", generateMessage("Admin", "Weclome to chat room"));
 
   //alert other users except this
-  socket.broadcast.emit("newMessage", {
-    from: "admin",
-    text: "A new user is joined",
-    createdAt: new Date().getTime(),
-  });
+  socket.broadcast.emit(
+    "newMessage",
+    generateMessage("Admin", "A new user is joined")
+  );
 
   socket.on("createMessage", (newMessage) => {
     console.log("Create an message: ", newMessage);
 
-    io.emit("newMessage", {
-      from: newMessage.from,
-      text: newMessage.text,
-      createdAt: new Date().getTime(),
-    });
+    io.emit("newMessage", generateMessage(newMessage.from, newMessage.text));
 
+    //传播给所有其他人除了我自己
     // socket.broadcast.emit("newMessage", {
     //   from: newMessage.from,
     //   text: newMessage.text,
