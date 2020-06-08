@@ -34,20 +34,19 @@ io.on("connection", (socket) => {
     callback("Server ack");
   });
 
+  // socket.on("createLocationMessage", (coords) => {
+  //   io.emit(
+  //     "newMessage",
+  //     generateMessage("Admin", `${coords.latitude}, ${coords.longitude}`)
+  //   );
+  // });
+
   socket.on("createLocationMessage", (coords) => {
     io.emit(
-      "newMessage",
-      generateMessage("Admin", `${coords.latitude}, ${coords.longitude}`)
+      "newLocationMessage",
+      generateLocationMessage("Admin", coords.latitude, coords.longitude)
     );
   });
-
-  //   socket.on("createLocationMessage", (coords) => {
-  //     console.log("Server createLocationMessage");
-  //     io.emit(
-  //       "newLocationMessage",
-  //       generateLocationMessage("Admin", coords.latitude, coords.longitude)
-  //     );
-  //   });
 
   socket.on("disconnect", (socket) => {
     console.log("Disconnected a client");
