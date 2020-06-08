@@ -25,11 +25,13 @@ io.on("connection", (socket) => {
     generateMessage("Admin", "A new user is joined")
   );
 
-  socket.on("createMessage", (newMessage) => {
+  socket.on("createMessage", (newMessage, callback) => {
     console.log("Create an message: ", newMessage);
 
     io.emit("newMessage", generateMessage(newMessage.from, newMessage.text));
 
+    //send ACK the client via callback()
+    callback("Server ack");
     //传播给所有其他人除了我自己
     // socket.broadcast.emit("newMessage", {
     //   from: newMessage.from,
