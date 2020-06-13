@@ -36,6 +36,14 @@ class Users {
 
     return namesArray;
   }
+
+  containUser(name) {
+    return (
+      this.users.filter((user) => {
+        return user.name === name;
+      }).length > 0
+    );
+  }
 }
 module.exports = {
   Users,

@@ -18,6 +18,7 @@ var users = new Users();
 //socket.broadcast.emit: emit to everyone connected to the socket except the current user
 //socket.emit:emit an event specifically to one user
 
+//io.to().emit() send an message to every connects that are attached to the room
 //io.on() register an event listener
 //socket.emit() --> emit an event to a single connection, io.emit() --> emit an event to every connections
 io.on("connection", (socket) => {
@@ -27,6 +28,11 @@ io.on("connection", (socket) => {
     if (!isRealString(params.name) || !isRealString(params.room)) {
       return callback("Name and room are required.");
     }
+    if (users.containUser(params.name)) {
+      return callback("Please choose another name.");
+    }
+
+    params.room = params.room.toLowerCase();
     socket.join(params.room);
     //socket.leave(params.room);
 
@@ -44,10 +50,6 @@ io.on("connection", (socket) => {
         "newMessage",
         generateMessage("Admin", `${params.name} has joined!`)
       );
-
-    io.to().emit(); //send an message to every connects that are attached to the room
-    //sucesful
-    callback();
   });
 
   socket.on("createMessage", (newMessage, callback) => {
@@ -83,7 +85,6 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     var user = users.removeUser(socket.id);
-    console.log(user);
     if (user) {
       io.to(user.room).emit("updateUserList", users.getUserList(user.room)); //update the client userList
       io.to(user.room).emit(
@@ -96,5 +97,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log("------CHAT APP START------" + PORT);
+  console.log("CHAT APP START: " + PORT);
 });
